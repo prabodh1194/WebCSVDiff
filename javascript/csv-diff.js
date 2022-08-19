@@ -5,39 +5,32 @@ myCodeMirrorText2 = null;
 
 diffText = '';
 
-var DiffStatus = {
-  SAME: 0,
-  ONLY1: 1,
-  ONLY2: 2,
-  DIFFERENT: 3
-};
-
 currentEditor = null;
 dialogLoadFromURL = null;
 
-var resultContainer = document.getElementById('result-csv-diff');
-var separatorSelect = document.getElementById('separatorRow');	
-var quoteSelect = document.getElementById('quoteRow');	
-var escapeSelect = document.getElementById('escapeRow');	
+let resultContainer = document.getElementById('result-csv-diff');
+let separatorSelect = document.getElementById('separatorRow');
+let quoteSelect = document.getElementById('quoteRow');
+let escapeSelect = document.getElementById('escapeRow');
 
-var Compare = {
+const Compare = {
   ONLY1: 1,
   ONLY2: 2,
 };
 
 function onChangeText() {
-	var separator = separatorSelect.value;
-	var quoteChar = quoteSelect.value;
-	var escapeChar = escapeSelect.value;
+	const separator = separatorSelect.value;
+	const quoteChar = quoteSelect.value;
+	const escapeChar = escapeSelect.value;
 	function getColumns(line) {
-		var result = [];
-		var fusion = false;
-		var columns = line.split(separator);
-		for (var iColumn = 0; iColumn < columns.length; iColumn++) {
+		let result = [];
+		let fusion = false;
+		let columns = line.split(separator);
+		for (let iColumn = 0; iColumn < columns.length; iColumn++) {
 			fusion = false;
-			var dataColumn = columns[iColumn];
+			let dataColumn = columns[iColumn];
 			if (dataColumn.length) {
-				if (dataColumn[0] == quoteChar) {
+				if (dataColumn[0] === quoteChar) {
 					if (dataColumn.length >= 2) {
 						if (dataColumn[dataColumn.length - 1] !== quoteChar) {
 							fusion = true;
@@ -62,12 +55,12 @@ function onChangeText() {
 		return result;
 	}
 	function newLine(cLine) {
-		var line = document.createElement('div');
+		let line = document.createElement('div');
 		resultContainer.appendChild(line);
 		line.classList.add('csv-diff-line');
 		
 		if (cLine) {
-			var column = document.createElement('div');
+			let column = document.createElement('div');
 			column.classList.add('csv-diff-column');
 			column.appendChild(document.createTextNode("Line " + cLine));
 			line.appendChild(column);
@@ -75,8 +68,7 @@ function onChangeText() {
 		return line;
 	}
 	function newColumn(line, column1, column2, error) {
-		var txt = '';
-		var column = document.createElement('div');
+		let column = document.createElement('div');
 		line.appendChild(column);
 		column.classList.add('csv-diff-column');
 		if (error === Compare.ONLY1) {
@@ -84,6 +76,9 @@ function onChangeText() {
 		} else if (error === Compare.ONLY2) {
 			column.classList.add('csv-diff-column-only-line2');
 		}
+
+		let txt;
+
 		if (column1 === null && column2 === null) {
 			txt = "";
 		} else if (column1 === null) {
@@ -113,12 +108,12 @@ function onChangeText() {
 	while(resultContainer.firstChild) resultContainer.removeChild(resultContainer.firstChild);
 	var cLine = 0;
 	var maxColumn = 0;
-	textByLine1.forEach(function (line, indexLine) {
+	textByLine1.forEach(function (line) {
 		if ((getColumns(line)).length > maxColumn) {
 			maxColumn = (getColumns(line)).length;
 		}
 	});
-	textByLine2.forEach(function (line, indexLine) {
+	textByLine2.forEach(function (line) {
 		if ((getColumns(line)).length > maxColumn) {
 			maxColumn = (getColumns(line)).length;
 		}
@@ -146,7 +141,7 @@ function onChangeText() {
 				} else {
 					newColumn(line, column1, null);
 				}
-				if (textByColumn1.length != indexColumn + 1) {
+				if (textByColumn1.length !== indexColumn + 1) {
 					diffText += separator;
 				}
 			});
@@ -156,7 +151,7 @@ function onChangeText() {
 					newColumn(line, null, column2);
 				}
 			});
-			for (var i = Math.max(textByColumn1.length, textByColumn2.length) ; i < maxColumn ; i++) {
+			for (let i = Math.max(textByColumn1.length, textByColumn2.length) ; i < maxColumn ; i++) {
 				diffText += separator;
 				newColumn(line, null, null);
 			}
@@ -172,7 +167,7 @@ function onChangeText() {
 				newColumn(line, null, null);
 			}
 		}
-		if (textByLine1.length != indexLine + 1) {
+		if (textByLine1.length !== indexLine + 1) {
 			diffText += "\n";
 		}
 	});
@@ -184,7 +179,7 @@ function onChangeText() {
 			var textByColumn2 = getColumns(line2);
 			textByColumn2.forEach(function (column2, index) {
 				newColumn(line, null, column2, Compare.ONLY2);
-				if (textByColumn2.length != index + 1) {
+				if (textByColumn2.length !== index + 1) {
 					diffText += separator;
 				}
 			});
@@ -222,7 +217,7 @@ function readSingleFile(e, callback) {
 	{
 		files = e.dataTransfer.files;
 	}
-	if (!files || files.length == 0) {
+	if (!files || files.length === 0) {
 		callback(null);
 		return;
 	}
@@ -304,14 +299,6 @@ document.getElementById('file-input-text-2').addEventListener('change', function
 	});
 }, false);
 
-
-
-function displayLoadURLDialog(editor)
-{
-	currentEditor = editor;
-	dialogLoadFromURL.show();
-	document.getElementById("url").focus();
-}
 function get (url, callback, callbackError, options) {
 	var xhr= new XMLHttpRequest();
 	xhr.open('GET', url, true);
@@ -325,7 +312,7 @@ function get (url, callback, callbackError, options) {
 				return; // or whatever error handling you want
 			}
 		}
-		callback((options && options.responseType && options.responseType == 'blob' ? this.response : this.responseText), this);
+		callback((options && options.responseType && options.responseType === 'blob' ? this.response : this.responseText), this);
 	};
 	if (options && options.responseType) {
 		xhr.responseType = options.responseType;
@@ -356,7 +343,7 @@ function loadURL(callback) {
 	var nbUrlToLoad = 0;
 	if (url1 && url1.length) nbUrlToLoad++;
 	if (url2 && url2.length) nbUrlToLoad++;
-	if (nbUrlToLoad == 0) {
+	if (nbUrlToLoad === 0) {
 		return callback();
 	}
 	if (url1 && url1.length) {
@@ -364,7 +351,7 @@ function loadURL(callback) {
 		document.getElementById('url').value = url1;
 		loadFromURL(function () {
 			nbUrlToLoad--;
-			if (nbUrlToLoad == 0) {
+			if (nbUrlToLoad === 0) {
 				callback();
 			}
 		});
@@ -374,7 +361,7 @@ function loadURL(callback) {
 		document.getElementById('url').value = url2;
 		loadFromURL(function () {
 			nbUrlToLoad--;
-			if (nbUrlToLoad == 0) {
+			if (nbUrlToLoad === 0) {
 				callback();
 			}
 		});
@@ -405,7 +392,7 @@ window.addEventListener('load', function () {
 	document.getElementById('copy-diff').addEventListener("click", function() {
 		copyToClipBoard(diffText);	
 	});
-	document.getElementById('download-diff').addEventListener('click', function(e) {
+	document.getElementById('download-diff').addEventListener('click', function() {
 		exportDiff({data: diffText, filename: "file.csv", mime: 'text/plain'}); 
 	}, false);
 	
