@@ -12,6 +12,8 @@
 					<div class="container-center"><span class="editor-title">First CSV to compare</span></div>
 					<br/><input type="button" class="action-button-editor right span" value="Browse CSV file" onClick="document.getElementById('file-input-text').click();" />
 					<input type="button" class="action-button-editor right span" value="load CSV from URL" onClick="displayLoadURLDialog(myCodeMirrorText1);" />
+					<input id="has-header-1" type="checkbox" class="right span" />
+					<label class="right span" for="has-header-1">Has Header</label>
 					<br/>
 					<br/><div class="row-container editor-container">
 						<textarea id="editor-container-text" class="editor">id,name,year of birth
@@ -27,6 +29,8 @@
 					<div class="container-center"><span class="editor-title">Second CSV to compare</span></div>
 					<br/><input type="button" class="action-button-editor right span" value="Browse CSV file" onClick="document.getElementById('file-input-text-2').click();" />
 					<input type="button" class="action-button-editor right span" value="load CSV from URL" onClick="displayLoadURLDialog(myCodeMirrorText2);" />
+					<input id="has-header-2" type="checkbox" class="right span" />
+					<label class="right span" for="has-header-2">Has Header</label>
 					<br/>
 					<br/><div class="row-container editor-container">
 						<textarea id="editor-container-text-2" class="editor">id,name,year of birth

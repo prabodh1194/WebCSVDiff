@@ -108,17 +108,12 @@ function onChangeText() {
 	while(resultContainer.firstChild) resultContainer.removeChild(resultContainer.firstChild);
 	let cLine = 0;
 	let maxColumn = 0;
-	textByLine1.forEach(function (line) {
-		if ((getColumns(line)).length > maxColumn) {
-			maxColumn = (getColumns(line)).length;
-		}
-	});
-	textByLine2.forEach(function (line) {
-		if ((getColumns(line)).length > maxColumn) {
-			maxColumn = (getColumns(line)).length;
-		}
-	});
+
+	textByLine1.forEach((line) => { maxColumn = Math.max(maxColumn, getColumns(line).length) });
+	textByLine2.forEach((line) => { maxColumn = Math.max(maxColumn, getColumns(line).length) });
+
 	let line = newLine();
+
 	for (let i = 0; i <= maxColumn; i++) {
 		let column = document.createElement('div');
 		column.classList.add('csv-diff-column');
