@@ -195,7 +195,7 @@ function onChangeText() {
 
 function copyToClipBoard (text) {
 	const textarea = document.createElement('textarea');
-	consttarea.textContent = text;
+	textarea.textContent = text;
 	document.body.appendChild(textarea);
 
 	const selection = document.getSelection();
@@ -329,7 +329,7 @@ function loadFromURL(callback)
 			{
 				editor.setValue(data);
 			}
-			dialogLoadFromURL.hide();
+			dialogLoadFromURL.hide(null);
 			if (callback) callback();
 		}, function () {
 		}
@@ -379,16 +379,11 @@ window.addEventListener('load', function () {
 	dragAndDrop(document.getElementById('dropZone2'), function(data) {
 		if (data) myCodeMirrorText2.setValue(data);
 	});
-	separatorSelect.addEventListener('change', function () {
-		onChangeText();
-	});
-	quoteSelect.addEventListener('change', function () {
-		onChangeText();
-	});
-	escapeSelect.addEventListener('change', function () {
-		onChangeText();
-	});
-	
+
+	separatorSelect.addEventListener('change', onChangeText);
+	quoteSelect.addEventListener('change', onChangeText)
+	escapeSelect.addEventListener('change', onChangeText);
+
 	document.getElementById('copy-diff').addEventListener("click", function() {
 		copyToClipBoard(diffText);	
 	});
@@ -402,8 +397,6 @@ window.addEventListener('load', function () {
 	loadURL(function () {
 		myCodeMirrorText1.on("change", onChangeText);
 		myCodeMirrorText2.on("change", onChangeText);
-		setTimeout(function () {
-			onChangeText();
-		}, 10);
+		setTimeout(onChangeText, 10);
 	});
 }, true);
