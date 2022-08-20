@@ -1,12 +1,12 @@
 resultToDraw = {json1: '', json2: '', colorLine: [], stepDiff: [], currentLine: 0, tab: ''};			
 
-myCodeMirrorText1 = null;
-myCodeMirrorText2 = null;
+let myCodeMirrorText1 = null;
+let myCodeMirrorText2 = null;
 
-diffText = '';
+let diffText = '';
 
-currentEditor = null;
-dialogLoadFromURL = null;
+let currentEditor = null;
+let dialogLoadFromURL = null;
 
 let resultContainer = document.getElementById('result-csv-diff');
 let separatorSelect = document.getElementById('separatorRow');
@@ -101,13 +101,13 @@ function onChangeText() {
 	diffText = '';
 	emptyAndHide(['editor-error1', 'editor-valid1']);
 	emptyAndHide(['editor-error2', 'editor-valid2']);
-	var text1 = myCodeMirrorText1.getValue("\n");
-	var text2 = myCodeMirrorText2.getValue("\n");
-	var textByLine1 = text1.split(/\r?\n/);
-	var textByLine2 = text2.split(/\r?\n/);
+	let text1 = myCodeMirrorText1.getValue("\n");
+	let text2 = myCodeMirrorText2.getValue("\n");
+	let textByLine1 = text1.split(/\r?\n/).sort();
+	let textByLine2 = text2.split(/\r?\n/).sort();
 	while(resultContainer.firstChild) resultContainer.removeChild(resultContainer.firstChild);
-	var cLine = 0;
-	var maxColumn = 0;
+	let cLine = 0;
+	let maxColumn = 0;
 	textByLine1.forEach(function (line) {
 		if ((getColumns(line)).length > maxColumn) {
 			maxColumn = (getColumns(line)).length;
@@ -118,9 +118,9 @@ function onChangeText() {
 			maxColumn = (getColumns(line)).length;
 		}
 	});
-	var line = newLine();
-	for (var i = 0; i <= maxColumn; i++) {
-		var column = document.createElement('div');
+	let line = newLine();
+	for (let i = 0; i <= maxColumn; i++) {
+		let column = document.createElement('div');
 		column.classList.add('csv-diff-column');
 		if (i > 0) {
 			column.appendChild(document.createTextNode("Field " + i));
@@ -129,14 +129,14 @@ function onChangeText() {
 	}
 	textByLine1.forEach(function (line1, indexLine) {
 		cLine++;
-		var line = newLine(cLine);
-		var textByColumn1 = (getColumns(line1));
+		let line = newLine(cLine);
+		let textByColumn1 = (getColumns(line1));
 		if (textByLine2.length > indexLine) {
-			var line2 = textByLine2[indexLine];
-			var textByColumn2 = getColumns(line2);
+			let line2 = textByLine2[indexLine];
+			let textByColumn2 = getColumns(line2);
 			textByColumn1.forEach(function (column1, indexColumn) {
 				if (textByColumn2.length > indexColumn) {
-					var column2 = textByColumn2[indexColumn];
+					let column2 = textByColumn2[indexColumn];
 					newColumn(line, column1, column2);
 				} else {
 					newColumn(line, column1, null);
@@ -162,7 +162,7 @@ function onChangeText() {
 				}
 				newColumn(line, column1, null, Compare.ONLY1);
 			});
-			for (var i = textByColumn1.length; i < maxColumn ; i++) {
+			for (let i = textByColumn1.length; i < maxColumn ; i++) {
 				diffText += separator;
 				newColumn(line, null, null);
 			}
@@ -175,15 +175,15 @@ function onChangeText() {
 		if (index >= textByLine1.length) {
 			diffText += "\n";
 			cLine++;
-			var line = newLine(cLine);
-			var textByColumn2 = getColumns(line2);
+			let line = newLine(cLine);
+			let textByColumn2 = getColumns(line2);
 			textByColumn2.forEach(function (column2, index) {
 				newColumn(line, null, column2, Compare.ONLY2);
 				if (textByColumn2.length !== index + 1) {
 					diffText += separator;
 				}
 			});
-			for (var i = textByColumn2.length; i < maxColumn ; i++) {
+			for (let i = textByColumn2.length; i < maxColumn ; i++) {
 				diffText += separator;
 				newColumn(line, null, null);
 			}
@@ -194,12 +194,12 @@ function onChangeText() {
 }
 
 function copyToClipBoard (text) {
-	var textarea = document.createElement('textarea');
-	textarea.textContent = text;
+	const textarea = document.createElement('textarea');
+	consttarea.textContent = text;
 	document.body.appendChild(textarea);
 
-	var selection = document.getSelection();
-	var range = document.createRange();
+	const selection = document.getSelection();
+	const range = document.createRange();
 	range.selectNode(textarea);
 	selection.removeAllRanges();
 	selection.addRange(range);
@@ -210,7 +210,7 @@ function copyToClipBoard (text) {
 	document.body.removeChild(textarea);
 }
 function readSingleFile(e, callback) {
-	var files;
+	let files;
 	if (e.target && e.target.files) {
 		files = e.target.files;
 	} else if (e.dataTransfer && e.dataTransfer.files) 
@@ -222,7 +222,7 @@ function readSingleFile(e, callback) {
 		return;
 	}
 	Array.prototype.forEach.call(files, function(file) { 
-		var reader = new FileReader();
+		const reader = new FileReader();
 		reader.onload = function() {
 			callback(reader.result, {file: file});
 		};
@@ -254,14 +254,14 @@ function dragAndDrop (dropZone, callback, options) {
 	}
 }
 function exportDiff(fileObject) {
-	var blob = (fileObject.blob ? fileObject.blob : new Blob([fileObject.data], { type: fileObject.mime }));
+	const blob = (fileObject.blob ? fileObject.blob : new Blob([fileObject.data], { type: fileObject.mime }));
 	if (navigator.msSaveBlob) { // IE 10+
 		navigator.msSaveBlob(blob, fileObject.filename);
 	} else {
-		var link = document.createElement("a");
+		let link = document.createElement("a");
 		if (link.download !== undefined) { // feature detection
 			// Browsers that support HTML5 download attribute
-			var url = URL.createObjectURL(blob);
+			let url = URL.createObjectURL(blob);
 			link.setAttribute("href", url);
 			link.setAttribute("download", fileObject.filename);
 			link.style.visibility = 'hidden';
@@ -277,7 +277,7 @@ function emptyAndHide (containerId) {
 			emptyAndHide(id);
 		});
 	} else {
-		var containerError = (typeof containerId === 'string' ? document.getElementById(containerId) : containerId);
+		let containerError = (typeof containerId === 'string' ? document.getElementById(containerId) : containerId);
 		if (containerError) {
 			containerError.innerText = '';
 			containerError.style.display = 'none';
@@ -300,7 +300,7 @@ document.getElementById('file-input-text-2').addEventListener('change', function
 }, false);
 
 function get (url, callback, callbackError, options) {
-	var xhr= new XMLHttpRequest();
+	let xhr= new XMLHttpRequest();
 	xhr.open('GET', url, true);
 	xhr.onreadystatechange= function() {
 		if (this.readyState!==4) return;
@@ -308,7 +308,7 @@ function get (url, callback, callbackError, options) {
 			if (callbackError) {
 				return callbackError(this);
 			} else {
-				alert('An error has occured.');
+				alert('An error has occurred.');
 				return; // or whatever error handling you want
 			}
 		}
@@ -321,8 +321,8 @@ function get (url, callback, callbackError, options) {
 } 
 function loadFromURL(callback)
 {
-	var editor = currentEditor;
-	var url = document.getElementById('url').value;
+	let editor = currentEditor;
+	let url = document.getElementById('url').value;
 	get(url, 
 		function (data) {
 			if (editor && data)
@@ -337,10 +337,10 @@ function loadFromURL(callback)
 }
 
 function loadURL(callback) {
-	var url = new URL(window.location.href);
-	var url1 = url.searchParams.get("url1");
-	var url2 = url.searchParams.get("url2");
-	var nbUrlToLoad = 0;
+	let url = new URL(window.location.href);
+	let url1 = url.searchParams.get("url1");
+	let url2 = url.searchParams.get("url2");
+	let nbUrlToLoad = 0;
 	if (url1 && url1.length) nbUrlToLoad++;
 	if (url2 && url2.length) nbUrlToLoad++;
 	if (nbUrlToLoad === 0) {
